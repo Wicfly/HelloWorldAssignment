@@ -1,0 +1,333 @@
+# Ice World Adventure
+# Hope Wang's Assignment
+import random # random numbers
+import sys # system stuff for exiting
+
+# an object describing our player
+player = { 
+    "name": "p1", 
+    "score": 0,
+    "items" : ["map"],
+    "friends" : [],
+    "location" : "start"
+}
+
+places = {
+    "place1" : "Cave",
+    "place2" : "Ice Hole",
+    "place3" : "Seaside"
+}
+
+def rollDice(minNum, maxNum, difficulty):
+    # any time a chance of something might happen, let's roll a die
+    result = random.randint(minNum,maxNum)
+    print ("You roll a: " + str(result) + " out of " + str(maxNum))
+
+    if (result <= difficulty):
+        print ("trying again....")
+        
+        input("press enter >")
+        rollDice(minNum, maxNum, difficulty) # this is a recursive call
+
+    return result
+
+def graphic(name):
+    if (name == "bear"):
+        print ('             ')
+        print ('Z    O.--.O  ')
+        print (' z z |-__- | ')
+        print ('     |     | ')
+        print ('    //   \\\\ ')
+        print ('   (|     | ) ')
+        print ('  /\\\\_   _/\\ ')
+        print ('  \\___)=(___/ ')
+        print ('    the bear    ')
+        print ('             ')
+    
+    if (name == "bearwake"):
+        print ('             ')
+        print ('     O.--.O  ')
+        print ('     |o__o | ')
+        print ('     |     | ')
+        print ('    //   \\\\ ')
+        print ('   (|     | ) ')
+        print ('  /\\\\_   _/\\ ')
+        print ('  \\___)=(___/ ')
+        print ('    the bear    ')
+        print ('             ')
+
+    if (name == "penguin"):
+        print ('             ')
+        print('   .--.   ')
+        print('  |@  @|  ')
+        print('  | \/ |  ')
+        print(' //   \\\\ ')
+        print('//     \\\\ ')
+        print('||  x   || ')
+        print('  \\____/' )
+        print('  Penguin ')
+        print ('             ')
+
+    if (name == "fish"):
+        print ('             ')
+        print('\\/(((( º\\  ')
+        print('/\\((((  /   ')
+        print('   A fish   ')
+        print ('             ')
+    
+    if(name == "title"):
+        print (r'----------------------------------------------------------------------------')
+        print (r'  _____   _____   _____    __          __  _____   ____    _       ____     ')
+        print (r' |_   _| |  _  | |  ___|   \ \        / / |  _  | |  _ \  | |     |  __ \   ')
+        print (r'   | |   | | |_| | |___     \ \  /\  / /  | | | | | | | | | |     | |  \ |  ')
+        print (r'   | |   | |  _  |  ___|     \ \/  \/ /   | | | | | |_| | | |     | |  | |  ')
+        print (r'  _| |_  | |_| | | |___       \  /\  /    | |_| | |  _ <  | |___  | |__/ |  ')
+        print (r' |_____| |_____| |_____|       \/  \/     |_____| |_| \_\ |_____| |_____/   ')
+        print (r'----------------------------------------------------------------------------')
+    
+def gameOver():
+
+    print("It's a pity you didn't survive...")
+    print("name: " + str(player["name"])) #customized name
+    print("score: " + str(player["score"])) #customized score
+    return
+
+def gameWin():
+
+    graphic("title")
+    print("You successfully found your tribe.")
+    print("name: " + str(player["name"])) #customized name
+    print("score: " + str(player["score"])) #customized score
+    return
+
+def seasidepath():
+    graphic("penguin")
+    print("What would you like to talk to them about?")
+    if ("fish" in player["items"]):
+        print ("options: [ ask food, learn, give fish, leaving ]")
+    else:
+        print ("options: [ ask food, learn, leaving ]")
+    playerChoice = input(">")
+
+    #leaving
+    if (playerChoice == "leaving"):
+        print("You feel they are unfriendly and decide to leave")
+        input("press enter to return to the map >")
+        checkMap()
+    #learning
+    elif (playerChoice == "learn"):
+        print("You humbly ask the penguins for advice, ")
+        print("and they decide to teach you how to fish.")
+        player["items"].append("fishing rod")
+        player["score"] += 50
+        print("You have successfully learned how to fish!")
+        input("press enter to continue >")
+        print("'There are a lot of fish over there in the 'ice hole'', the penguin shared an important message")
+        input("press enter to continue >")
+        checkMap()
+        #ask food
+    elif (playerChoice == "ask food"):
+        print("Penguins need to check their food stocks:")
+        print("-----<Need to roll the dice to check>-----")
+        input("press enter to roll >")
+
+        difficulty = 5
+        chanceRoll = rollDice(0,10,difficulty) #roll a dice between 0-10
+
+        #if higher than 3
+        if(chanceRoll >= difficulty):
+            print("'You are lucky, we have extra food, please enjoy it'")
+            player["score"] += 50
+        else:
+            print("Unfortunately we are out of food too.")
+            input("press enter to continue >")
+            seasidepath()
+    #give fish
+    elif (playerChoice == "give fish"):
+        print("The penguins are very happy.")
+        print("The penguins have recognized you, ")
+        player["score"] += 100
+        input("press enter to continue >")
+        print("They asked if you want to stay and become a member of their tribe.")
+        Choice = input("please make a choice:[ yes, no thanks ] >")
+        if (Choice == "yes"):
+            print("You and the penguins lived a happy life.")
+            input("press enter to continue >")
+            gameWin()
+        elif (Choice == "no thanks"):
+            print("We respect your ideas, let us help you go home!")
+            input("press enter to continue >")
+            gameWin()
+        else:
+            print("Sorry, that doesn't work here.")
+            seasidepath()
+    else:
+        print("Sorry, that doesn't work here.")
+        seasidepath()
+    
+def iceholepath():
+    if ("fishing rod" in player["items"]):
+        print ("options: [ fishing , catching , leaving ]")
+    else:
+        print ("options: [ catching, leaving ]")
+        
+    playerChoice = input("please make a choice >")
+
+    # leaving
+    if (playerChoice == "leaving"):
+        print("You think it's too cold there, so you decide to leave.")
+        input("press enter to return to the map >")
+        checkMap()
+    # fishing
+    elif (playerChoice == "fishing"):
+        player["items"].append("fish") # add an item to the array with append
+        player["score"] += 50
+        graphic("fish")
+        print("You successfully caught a big fish!")
+        iceholepath()
+    # catching
+    elif (playerChoice == "catching"):
+        print("Fish are cunning, you need to roll the dice to judge")
+        input("press enter to roll ")
+        difficulty = 10
+        chanceRoll = rollDice(0,20,difficulty)
+
+        if(chanceRoll >= difficulty):
+            graphic("fish")
+            print("You are very skilled and have successfully caught a fish!")
+            player["score"] += 50
+            player["items"].append("fish")
+            input("press enter to continue >")
+            iceholepath()
+        else:
+            print("Unlucky, the fish escaped!")
+            input("press enter to continue >")
+            iceholepath()
+    else:
+        print("that doesn't work here.")
+        input("press enter to continue >")
+        iceholepath()
+
+
+
+def cavepath():
+    print("The road to the cave was snowy and windy.")
+    input("press enter to continue >")
+    print("But you insisted and came to the cave entrance.")
+
+    graphic("bear")
+    print("!!! *You got a big shock*")
+    input("press enter to continue >")
+    print("'Fortunately, it was a sleeping bear', you thought.")
+    print("What should I do next?")
+    input("press enter to continue >")
+    print("options: [wake him up, run]")
+    playerChoice = input(">")
+
+    #option 1, try to wake up
+    if(playerChoice == "wake him up"):
+        print("You tried to wake him up.")
+        print("-----<Need to roll the dice to determine>-----")
+        input("press enter to roll >")
+
+        difficulty = 3
+        chanceRoll = rollDice(0,10,difficulty) #roll a dice between 0-10
+
+        #if higher than 3
+        if(chanceRoll >= difficulty):
+            graphic("bearwake")
+            print("The bear slowly woke up.")
+            player["score"] += 50
+        else:
+            print("You try to wake him up, but he seems not to hear you.")
+            cavepath() #try again
+        print("'What should I talk to him about?'")
+        playerChoice = input("ask for food or or telling your experiences? 'food' or 'experiences' >")
+
+        #food
+        if(playerChoice == "food"):
+            print("The little bear looks angry, ")
+            print("he said, 'I have no food either!'")
+            input("press enter to continue >")
+            print("'But maybe... you can be my food!'")
+            input("press enter to continue >")
+            gameOver()
+        elif(playerChoice == "experiences"):
+            print("The little bear felt very sorry for you after hearing your story.")
+            input("press enter to continue >")
+            print("'maybe I could help you find your people!'")
+            print("'But you have to promise to give me something to eat after I send you back!'")
+            input("press enter to continue >")
+            print("No problem, you said. ")
+            player["friends"].append("bear")
+            player["score"] = int(player["score"]) + 100
+            print("You gained a new friend and 100 points!")
+            gameWin()
+
+
+    
+def checkMap():
+    print("You opened the map, it looks like there are three places nearby...")
+
+    print("Locations nearby: [ Cave, Ice Hole , Seaside , Hide map ]")
+
+    playerChoice = input("Choose a place to go >") #user input
+
+    # player options
+    if (playerChoice == "Cave"):
+        print("You are heading to the Cave...")
+        input("press enter to continue >")
+        cavepath() #Cave
+    
+    elif(playerChoice == "Ice Hole"):
+        print("You are heading to Ice Hole...")
+        input("press enter to continue >")
+        print("Although you are very tired, but you still reach the ice Hole.")
+        print("There are many fish swimming in the water, and you are hungry.")
+        input("press enter to continue >")
+        iceholepath() #Ice Hole
+    
+    elif(playerChoice == "Seaside"):
+        print("You are heading to Seaside...")
+        input("press enter to continue >")
+        print("The view is very clear on the way to the beach.")
+        print("You met a group of penguins.")
+        seasidepath() #Seaside
+    
+    elif (playerChoice == "exit"):
+        print("You decide to give up")
+        return
+
+
+def introStory():
+    # introduction
+    print("You wake up in a vast snowy field with a splitting headache. ")
+    input("press enter to continue >")
+    print("You try to remember your name. ")
+    player["name"] = input("Oh! My name is >")
+
+    #start your journy
+    print("You remember that you are ' " + player["name"] + " ', and lost contact with your tribe in a snowstorm. ")
+    input("press enter to continue >")
+    print("You find yourself with nothing but hungry. Wait, you have a map! ")
+    input("press enter to continue >")
+    print("It's a pity that you seem to have forgotten your destination. ")
+
+    playerChoice = input("Do you want to choose 'View Map' or 'Keep Lying Down'? >")
+
+    # base on player's choice
+    if (playerChoice == "View Map"):
+        print("You decide to open the map ")
+        input("press enter to continue >")
+        checkMap()
+    else:
+        print("You're getting hungrier and colder, so why not we view the map? ")
+        input("press enter to continue >")
+        checkMap()
+
+#enter the game
+def main():
+    graphic("title")
+    introStory()
+
+main()
