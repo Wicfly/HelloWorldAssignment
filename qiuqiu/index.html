@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Spheres</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="sketch.js"></script> <!-- 引入你的 sketch.js 文件 -->
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #textOverlay {
+            position: absolute; /* 使文本层绝对定位 */
+            top: 50px; /* 调整文本位置 */
+            left: 23%; /* 水平居中 */
+            transform: translateX(-50%); /* 水平居中 */
+            color: rgba(255, 117, 209, 0.699); /* 设置文本颜色 */
+            font-size: 100px; /* 设置文本大小 */
+            z-index: 1; /* 确保文本在最上层 */
+        
+        }
+        #text2 {
+            position: absolute; /* 使文本层绝对定位 */
+            top: 300px; /* 调整文本位置 */
+            left: 16%; /* 水平居中 */
+            transform: translateX(-50%); /* 水平居中 */
+            color: rgba(148, 22, 106, 0.519); /* 设置文本颜色 */
+            font-size: 30px; /* 设置文本大小 */
+            z-index: 1; /* 确保文本在最上层 */
+        
+        }
+    </style>
+</head>
+<body>
+    <div id="textOverlay">Sphere <br> Battleground.</div> <!-- 在这里添加文本 -->
+    <div id="text2">Hope's week 4 assignment. <br> Special thanks: Chat GPT</div> <!-- 在这里添加文本 -->
+</body>
+</html>
+
